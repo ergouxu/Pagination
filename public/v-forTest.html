@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ToDoList</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="root">
+        <div>
+            <input v-model="inputValue" />
+            <button @click="handleClick">提交</button>
+        </div>
+        <ul>
+            <!-- 外层调用时传递了一个名为content的参数进去，可以使用@methodName的方式来订阅事件 -->
+            <todo-item 
+            v-for="(item, index) of list" 
+            :key="index" 
+            :content="item" 
+            :index="index"
+            @delete="handleDelete">
+
+            </todo-item>
+        </ul>
+    </div>
+    <script>
+        // 每一个Vue组件都是一个实例
+        // 定义的全局组件
+        Vue.component('todo-item', {
+            props: ['content', 'index'],  //接受一个从外部传递进来的一个名为content的属性 
+            template: '<li @click="handleClick">{{content}}</li>',
+            methods: {
+                handleClick: function () {
+                    //想要在子组件中删除数据，需要删除父组件中的数据，这需要与父组件进行通信，要需要父组件
+                    //将当前子组件的下标传递进来
+                    // 通知父组件,调用emit方法，触发一个名叫delete的事件，并且携带index值
+                    this.$emit('delete', this.index)
+                }
+            }
+        })
+
+        //定义局部组件,需要在实力里面进行组件的声明
+        // var ToDoItem = {
+        //     template:'<li>item</li>'
+        // }
+
+        new Vue({
+            el: '#root',
+            // 当定义局部组件时需要在实例中进行声明
+            // components:{
+            //     'todo-item':ToDoItem
+            // },
+            data: {
+                inputValue: '',
+                list: []
+            },
+            methods: {
+                handleClick: function () {
+                    this.list.push(this.inputValue);
+                    this.inputValue = ''
+                },
+                handleDelete:function(index){
+                    // lisi的删除方法，index为下标，1为每一次删除一个数据
+                    this.list.splice(index, 1)
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
