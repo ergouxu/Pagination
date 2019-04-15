@@ -1,8 +1,17 @@
 <template>
   <div>
     <el-input v-model="tableDataName" placeholder="请输入姓名" style="width:240px"></el-input>
+    <el-select v-model="value4" clearable @focus="selectClick" placeholder="instanceを選択">
+      <el-option 
+      v-for="item in options" 
+      :key="item.value" 
+      :label="item.label" 
+      :value="item.value"
+      ></el-option>
+    </el-select>
     <el-button type="primary" @click="doFilter">搜索</el-button>
     <el-button type="primary" @click="openData">展示数据</el-button>
+
     <el-table :data="tableDataEnd" border style="width: 100%">
       <el-table-column prop="date" label="日期" width="180"></el-table-column>
       <el-table-column prop="name" label="姓名" width="180"></el-table-column>
@@ -65,6 +74,25 @@ export default {
           address: "上海市普陀区金沙江路 1516 弄"
         }
       ],
+      options: [
+        {
+          value: 1,
+          label: "instance_1"
+        },
+        {
+          value: 2,
+          label: "instance_2"
+        },
+        {
+          value: 3,
+          label: "instance_3"
+        },
+        {
+          value: 4,
+          label: "instance_4"
+        }
+      ],
+      value4: "",
       tableDataName: "",
       tableDataEnd: [],
       currentPage: 4,
@@ -74,7 +102,9 @@ export default {
       flag: false
     };
   },
+  // 生命周期之一，在实例被创建以后调用，对一些东西进行初始化
   created() {
+    // 可以在这里面对select的子项数据进行初始化
     this.totalItems = this.tableDataBegin.length;
     if (this.totalItems > this.pageSize) {
       for (let index = 0; index < this.pageSize; index++) {
@@ -87,7 +117,7 @@ export default {
   methods: {
     //前端搜索功能需要区分是否检索,因为对应的字段的索引不同
     //用两个变量接收currentChangePage函数的参数
-    doFilter() {
+    doFilter:function(){
       if (this.tableDataName == "") {
         this.$message.warning("查询条件不能为空！");
         return;
@@ -135,6 +165,9 @@ export default {
           this.tableDataEnd.push(list[from]);
         }
       }
+    },
+    selectClick(){
+      console.log('wocao')
     }
   }
 };
