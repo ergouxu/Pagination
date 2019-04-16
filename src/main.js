@@ -1,20 +1,43 @@
-// 是整个项目的入口文件
 import Vue from 'vue'
-import ToDoList from './ToDoList.vue'
-import Pagination from './components/Pagination.vue'
-import './plugins/element.js'
+import App from './App.vue'
+import router from './router'
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
+import '@/styles/index.scss'
+import 'font-awesome/scss/font-awesome.scss'
+import axios from 'axios'
+import global from './components/common/Global.vue'
+import apiLoader from './components/common/APILoader.vue'
+import locale from 'element-ui/lib/locale/lang/ja'
 
-// 设置为 false 以阻止 vue 在启动时生成生产提示。
+Vue.use(ElementUI, { locale })
+Vue.use(ElementUI)
 Vue.config.productionTip = false
 
-//创建了一个Vue实例，挂载在app的节点
-new Vue({
-  // 注册了一个名叫App的局部组件 
-  render: h => h(Pagination),
-  // render: function (createElement) {
-//   return createElement(App);
-// } 这是TM时ES6的语法
-}).$mount('#app')
-// 将 h 作为 createElement 的别名是 Vue 生态系统中的一个通用惯例，实际上也是 JSX 所要求的，
-// mount的作用时如果在作用域中 h 失去作用，在应用中会触发报错。
+/* AXIOS共通定義 */
+axios.defaults.withCredentials = false
+Vue.prototype.$axios = axios
 
+/* 共通変数定義 */
+Vue.prototype.Global = global
+Vue.prototype.APILoader = apiLoader
+
+
+new Vue({
+  router,
+  render: h => h(App)
+}).$mount('#app')
+
+// router.beforeEach((to, from, next) => {
+//   if(to.path === '/login'){
+//     sessionStorage.removeItem('user');
+//   }
+//   var user = sessionStorage.getItem('user');
+//   if(!user && to.path !== '/login'){
+//     next({
+//       path: '/login'
+//     })
+//   }else{
+//     next();
+//   }
+// })
